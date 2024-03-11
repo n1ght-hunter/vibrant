@@ -1,15 +1,32 @@
 [package]
+edition = "2021"
 name = "vibrant"
 version = "0.1.0"
-edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-bevy = { version = "0.13.0"}
-bevy_flycam = "0.13.0"
+bevy = {version = "0.13.0"}
+
+# Blender_bevy_components_workflow
+bevy_gltf_blueprints = "0.9.0"
+bevy_gltf_save_load = "0.4.0"
+bevy_registry_export = "0.3.0"
+
+
+# bevy plugins
 bevy_rapier3d = "0.25.0"
+bevy_third_person_camera = "0.1.10"
+bevy_dev_console = {git = "https://github.com/doonv/bevy_dev_console.git", version = "0.1.0"}
+bevy_flycam = "0.13.0"
+
+# extra deps
 rand = "0.8.5"
 
+# Enable a small amount of optimization in debug mode
+[profile.dev]
+opt-level = 1
+
+# Enable high optimizations for dependencies (incl. Bevy), but not for our code:
 [profile.dev.package."*"]
 opt-level = 3
