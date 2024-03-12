@@ -420,6 +420,44 @@
       "type": "object",
       "typeInfo": "Enum"
     },
+    "bevy_asset::handle::Handle<bevy_atmosphere::skybox::SkyBoxMaterial>": {
+      "isComponent": true,
+      "isResource": false,
+      "oneOf": [
+        {
+          "items": false,
+          "prefixItems": [
+            {
+              "type": {
+                "$ref": "#/$defs/std::sync::Arc<bevy_asset::handle::StrongHandle>"
+              }
+            }
+          ],
+          "short_name": "Strong",
+          "title": "Strong",
+          "type": "array",
+          "typeInfo": "Tuple"
+        },
+        {
+          "items": false,
+          "prefixItems": [
+            {
+              "type": {
+                "$ref": "#/$defs/bevy_asset::id::AssetId<bevy_atmosphere::skybox::SkyBoxMaterial>"
+              }
+            }
+          ],
+          "short_name": "Weak",
+          "title": "Weak",
+          "type": "array",
+          "typeInfo": "Tuple"
+        }
+      ],
+      "short_name": "Handle<SkyBoxMaterial>",
+      "title": "bevy_asset::handle::Handle<bevy_atmosphere::skybox::SkyBoxMaterial>",
+      "type": "object",
+      "typeInfo": "Enum"
+    },
     "bevy_asset::handle::Handle<bevy_audio::audio_source::AudioSource>": {
       "isComponent": true,
       "isResource": false,
@@ -1288,6 +1326,52 @@
       "type": "object",
       "typeInfo": "Enum"
     },
+    "bevy_asset::id::AssetId<bevy_atmosphere::skybox::SkyBoxMaterial>": {
+      "isComponent": false,
+      "isResource": false,
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "index": {
+              "title": "index",
+              "type": {
+                "$ref": "#/$defs/bevy_asset::assets::AssetIndex"
+              }
+            }
+          },
+          "required": [
+            "index"
+          ],
+          "short_name": "Index",
+          "title": "Index",
+          "type": "object",
+          "typeInfo": "Struct"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "uuid": {
+              "title": "uuid",
+              "type": {
+                "$ref": "#/$defs/bevy_utils::Uuid"
+              }
+            }
+          },
+          "required": [
+            "uuid"
+          ],
+          "short_name": "Uuid",
+          "title": "Uuid",
+          "type": "object",
+          "typeInfo": "Struct"
+        }
+      ],
+      "short_name": "AssetId<SkyBoxMaterial>",
+      "title": "bevy_asset::id::AssetId<bevy_atmosphere::skybox::SkyBoxMaterial>",
+      "type": "object",
+      "typeInfo": "Enum"
+    },
     "bevy_asset::id::AssetId<bevy_audio::audio_source::AudioSource>": {
       "isComponent": false,
       "isResource": false,
@@ -2123,6 +2207,110 @@
       "title": "bevy_asset::path::AssetPath<'static>",
       "type": "object",
       "typeInfo": "Value"
+    },
+    "bevy_atmosphere::collection::gradient::Gradient": {
+      "additionalProperties": false,
+      "isComponent": false,
+      "isResource": false,
+      "properties": {
+        "ground": {
+          "type": {
+            "$ref": "#/$defs/bevy_render::color::Color"
+          }
+        },
+        "horizon": {
+          "type": {
+            "$ref": "#/$defs/bevy_render::color::Color"
+          }
+        },
+        "sky": {
+          "type": {
+            "$ref": "#/$defs/bevy_render::color::Color"
+          }
+        }
+      },
+      "required": [
+        "sky",
+        "horizon",
+        "ground"
+      ],
+      "short_name": "Gradient",
+      "title": "bevy_atmosphere::collection::gradient::Gradient",
+      "type": "object",
+      "typeInfo": "Struct"
+    },
+    "bevy_atmosphere::collection::nishita::Nishita": {
+      "additionalProperties": false,
+      "isComponent": false,
+      "isResource": false,
+      "properties": {
+        "atmosphere_radius": {
+          "type": {
+            "$ref": "#/$defs/f32"
+          }
+        },
+        "mie_coefficient": {
+          "type": {
+            "$ref": "#/$defs/f32"
+          }
+        },
+        "mie_direction": {
+          "type": {
+            "$ref": "#/$defs/f32"
+          }
+        },
+        "mie_scale_height": {
+          "type": {
+            "$ref": "#/$defs/f32"
+          }
+        },
+        "planet_radius": {
+          "type": {
+            "$ref": "#/$defs/f32"
+          }
+        },
+        "ray_origin": {
+          "type": {
+            "$ref": "#/$defs/glam::Vec3"
+          }
+        },
+        "rayleigh_coefficient": {
+          "type": {
+            "$ref": "#/$defs/glam::Vec3"
+          }
+        },
+        "rayleigh_scale_height": {
+          "type": {
+            "$ref": "#/$defs/f32"
+          }
+        },
+        "sun_intensity": {
+          "type": {
+            "$ref": "#/$defs/f32"
+          }
+        },
+        "sun_position": {
+          "type": {
+            "$ref": "#/$defs/glam::Vec3"
+          }
+        }
+      },
+      "required": [
+        "ray_origin",
+        "sun_position",
+        "sun_intensity",
+        "planet_radius",
+        "atmosphere_radius",
+        "rayleigh_coefficient",
+        "rayleigh_scale_height",
+        "mie_coefficient",
+        "mie_scale_height",
+        "mie_direction"
+      ],
+      "short_name": "Nishita",
+      "title": "bevy_atmosphere::collection::nishita::Nishita",
+      "type": "object",
+      "typeInfo": "Struct"
     },
     "bevy_audio::audio::DefaultSpatialScale": {
       "isComponent": false,
