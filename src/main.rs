@@ -1,11 +1,12 @@
-use bevy::{log::LogPlugin, prelude::*};
+use bevy::{log::LogPlugin, prelude::*, render::view::NoFrustumCulling};
+use bevy_atmosphere::prelude::{AtmosphereCamera, AtmospherePlugin};
 use bevy_dev_console::prelude::*;
 use bevy_editor_pls::prelude::*;
 use bevy_flycam::{FlyCam, NoCameraPlayerPlugin};
 use bevy_gltf_blueprints::{BlueprintsPlugin, GltfFormat};
 use bevy_gltf_save_load::SaveLoadPlugin;
 use bevy_registry_export::ExportRegistryPlugin;
-use bevy_atmosphere::prelude::{AtmospherePlugin, AtmosphereCamera};
+use bevy_scene_hook::{SceneHook, HookedSceneBundle, HookPlugin};
 
 struct BlenderPlugins;
 
@@ -43,6 +44,7 @@ fn main() {
             DevConsolePlugin,
             NoCameraPlayerPlugin,
             AtmospherePlugin,
+            HookPlugin,
         ))
         .init_state::<MyStates>()
         .add_systems(Startup, (spawn_player, spawn_world, spawn_camera))
@@ -55,11 +57,19 @@ struct Player;
 
 fn spawn_player(mut commands: Commands, assets: Res<AssetServer>) {
     let player = (
-        SceneBundle {
-            scene: assets.load("models\\library\\person.glb#Scene0"),
-            ..default()
+        HookedSceneBundle {
+            scene: SceneBundle {
+                scene: assets.load("models\\library\\person.glb#Scene0"),
+                ..default()
+            },
+            hook: SceneHook::new(|entity, commands| {
+                if entity.get::<Handle<Mesh>>().is_some() {
+                    commands.insert(NoFrustumCulling);
+                }
+            }),
         },
         Player,
+        NoFrustumCulling,
     );
 
     commands.spawn(player);
