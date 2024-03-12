@@ -2,8 +2,9 @@ use bevy::{log::LogPlugin, prelude::*};
 use bevy_dev_console::prelude::*;
 use bevy_flycam::{FlyCam, NoCameraPlayerPlugin};
 use bevy_gltf_blueprints::{BlueprintsPlugin, GltfFormat};
-use bevy_registry_export::ExportRegistryPlugin;
 use bevy_gltf_save_load::SaveLoadPlugin;
+use bevy_registry_export::ExportRegistryPlugin;
+use bevy_editor_pls::prelude::*;
 
 struct BlenderPlugins;
 
@@ -23,26 +24,37 @@ impl Plugin for BlenderPlugins {
     }
 }
 
+#[derive(Clone, Eq, PartialEq, Debug, Hash, Default, States)]
+enum MyStates {
+    #[default]
+    AssetLoading,
+    Next,
+}
+
 fn main() {
     App::new()
+        .register_type::<Player>()
         .add_plugins((
             ConsoleLogPlugin::default(),
             DefaultPlugins.build().disable::<LogPlugin>(),
             BlenderPlugins,
+            EditorPlugin::default(),
             DevConsolePlugin,
             NoCameraPlayerPlugin,
         ))
+        .init_state::<MyStates>()
         .add_systems(Startup, (spawn_player, spawn_world, spawn_camera))
         .run();
 }
 
-#[derive(Component)]
+#[derive(Component, Reflect, Default, Debug)]
+#[reflect(Component)]
 struct Player;
 
 fn spawn_player(mut commands: Commands, assets: Res<AssetServer>) {
     let player = (
         SceneBundle {
-            scene: assets.load("girl.glb#Scene0"),
+            scene: assets.load("models\\library\\person.glb#Scene0"),
             // scene: assets.load("girl.gltf#Scene0"),
             transform: Transform::from_xyz(0.0, 0.5, 0.0),
             ..default()
@@ -65,8 +77,8 @@ fn spawn_camera(mut commands: Commands) {
 }
 
 fn spawn_world(
-    mut commands: Commands,
     mut meshes: ResMut<Assets<Mesh>>,
+    mut commands: Commands,
 
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
