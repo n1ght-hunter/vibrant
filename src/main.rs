@@ -2,33 +2,26 @@ mod fps_temp;
 pub mod physics;
 pub mod player;
 
-use std::f32::consts::TAU;
-
 use bevy::{
     diagnostic::FrameTimeDiagnosticsPlugin,
     gltf::Gltf,
     log::LogPlugin,
     prelude::*,
-    render::{camera::Exposure, view::NoFrustumCulling},
-    window::{CursorGrabMode, PrimaryWindow, WindowTheme},
+    window::{PrimaryWindow, WindowTheme},
 };
 use bevy_asset_loader::{
     asset_collection::AssetCollection,
     loading_state::{config::ConfigureLoadingState, LoadingState, LoadingStateAppExt},
 };
-use bevy_atmosphere::prelude::{AtmosphereCamera, AtmospherePlugin};
+use bevy_atmosphere::prelude::AtmospherePlugin;
 use bevy_dev_console::prelude::*;
-use bevy_flycam::{FlyCam, NoCameraPlayerPlugin};
-use bevy_framepace::{FramepacePlugin, FramepaceSettings};
+use bevy_flycam::NoCameraPlayerPlugin;
+use bevy_framepace::FramepacePlugin;
 use bevy_gltf_blueprints::{BlueprintsPlugin, GltfFormat};
 use bevy_gltf_save_load::SaveLoadPlugin;
 use bevy_rapier3d::prelude::*;
 use bevy_registry_export::ExportRegistryPlugin;
-use bevy_scene_hook::{HookPlugin, HookedSceneBundle, SceneHook};
-// use controller::{
-//     CameraConfig, FpsController, FpsControllerInput, FpsControllerPlugin, LogicalPlayer,
-//     RenderPlayer,
-// };
+use bevy_scene_hook::HookPlugin;
 use fps_temp::{fps_counter_showhide, fps_text_update_system, setup_fps_counter};
 
 struct BlenderPlugins;
@@ -142,7 +135,7 @@ struct Player;
 //     commands.spawn(player);
 // }
 
-fn spawn_camera(mut commands: Commands) {
+fn spawn_camera(commands: Commands) {
     // let camera = (
     //     Camera3dBundle {
     //         transform: Transform::from_xyz(-2.0, 2.5, 5.0).looking_at(Vec3::ZERO, Vec3::Y),
