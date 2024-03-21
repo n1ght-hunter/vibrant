@@ -7,7 +7,7 @@ resolver = "2"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-bevy = {version = "0.13.0"}
+bevy = {version = "0.13.0", features = ["jpeg"]}
 
 # Blender_bevy_components_workflow
 bevy_gltf_blueprints = "0.9.0"
@@ -16,7 +16,7 @@ bevy_registry_export = "0.3.0"
 
 
 # bevy plugins
-bevy_rapier3d = "0.25.0"
+bevy_xpbd_3d = "0.4"
 bevy_third_person_camera = "0.1.10"
 bevy_dev_console = {git = "https://github.com/doonv/bevy_dev_console.git", version = "0.1.0"}
 bevy_flycam = "0.13.0"
@@ -24,10 +24,14 @@ bevy_asset_loader = { version = "0.20.0", features = ["3d"] }
 bevy_editor_pls = "0.8.1"
 bevy_atmosphere = "0.9.0"
 bevy-scene-hook = "10.0.0"
+bevy_framepace = "0.15.0"
+bevy_rapier3d = "0.25.0"
 
 # extra deps
 rand = "0.8.5"
-bevy_framepace = "0.15.0"
+leafwing-input-manager = "0.13.3"
+serde = { version = "1.0.197", features = ["derive"] }
+ron = "0.8.1"
 
 # Enable a small amount of optimization in debug mode
 [profile.dev]

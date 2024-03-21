@@ -1,14 +1,28 @@
+mod physics_replace_proxies;
+mod utils;
+
 use bevy::prelude::*;
-use bevy_rapier3d::prelude::*;
+use bevy_xpbd_3d::prelude::*;
+use bevy_gltf_blueprints::GltfBlueprintsSet;
 
-pub struct PhysicsPlugins;
+use physics_replace_proxies::physics_replace_proxies;
 
-impl Plugin for PhysicsPlugins {
+use self::physics_replace_proxies::AutoAABBCollider;
+
+pub struct PhysicsPlugin;
+
+impl Plugin for PhysicsPlugin {
     fn build(&self, app: &mut App) {
         app.add_plugins((
-            RapierPhysicsPlugin::<NoUserData>::default(),
+            PhysicsPlugins::default(),
             #[cfg(feature = "debug")]
-            RapierDebugRenderPlugin::default(),
-        ));
+            PhysicsDebugPlugin::default(),
+        ))
+        .register_type::<AutoAABBCollider>()
+        .register_type::<physics_replace_proxies::Collider>()
+        .add_systems(
+            Update,
+            physics_replace_proxies.after(GltfBlueprintsSet::AfterSpawn),
+        );
     }
 }

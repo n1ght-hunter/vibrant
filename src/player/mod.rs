@@ -1,60 +1,49 @@
 mod controller;
+mod keybinds;
 
 use std::f32::consts::TAU;
 
+use controller::*;
+
 use bevy::{prelude::*, render::camera::Exposure, window::CursorGrabMode};
 use bevy_atmosphere::plugin::AtmosphereCamera;
-use bevy_rapier3d::prelude::*;
 
-use controller::{
-    CameraConfig, FpsController, FpsControllerInput, FpsControllerPlugin, LogicalPlayer,
-};
+use bevy_xpbd_3d::{math::*, prelude::*};
 
 use crate::MyStates;
-
-use self::controller::RenderPlayer;
 
 pub struct PlayerPlugin;
 
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
-        app.add_plugins(FpsControllerPlugin)
-            .add_systems(OnEnter(MyStates::Next), spawn_player)
-            .add_systems(Update, manage_cursor);
+        app.add_plugins((keybinds::PlayerKeyBindsPlugin, CharacterControllerPlugin))
+            .add_systems(OnEnter(MyStates::Next), spawn_player);
     }
 }
 
-fn spawn_player(mut commands: Commands) {
-    let logical_entity = commands
+fn spawn_player(
+    mut commands: Commands,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<StandardMaterial>>,
+    assets: Res<AssetServer>,
+) {
+    let e = commands
         .spawn((
-            Collider::capsule(Vec3::Y * 0.5, Vec3::Y * 1.5, 0.5),
-            Friction {
-                coefficient: 0.0,
-                combine_rule: CoefficientCombineRule::Min,
-            },
-            Restitution {
-                coefficient: 0.0,
-                combine_rule: CoefficientCombineRule::Min,
-            },
-            ActiveEvents::COLLISION_EVENTS,
-            Velocity::zero(),
-            RigidBody::Dynamic,
-            Sleeping::disabled(),
-            LockedAxes::ROTATION_LOCKED,
-            AdditionalMassProperties::Mass(1.0),
-            GravityScale(0.0),
-            Ccd { enabled: true }, // Prevent clipping when going fast
-            TransformBundle::from_transform(Transform::from_translation(Vec3::new(0.0, 1.0, 0.0))),
-            LogicalPlayer,
-            FpsControllerInput {
-                pitch: -TAU / 12.0,
-                yaw: TAU * 5.0 / 8.0,
+            PbrBundle {
+                mesh: meshes.add(Capsule3d::new(0.4, 1.0)),
+                material: materials.add(Color::rgb(0.8, 0.7, 0.6)),
+                transform: Transform::from_xyz(0.0, 1.5, 0.0),
                 ..default()
             },
-            FpsController {
-                air_acceleration: 80.0,
-                ..default()
-            },
+            CharacterControllerBundle::new(Collider::capsule( 1.5, 0.4)).with_movement(
+                30.0,
+                0.92,
+                7.0,
+                (30.0 as Scalar).to_radians(),
+            ),
+            Friction::ZERO.with_combine_rule(CoefficientCombine::Min),
+            Restitution::ZERO.with_combine_rule(CoefficientCombine::Min),
+            GravityScale(2.0),
         ))
         .insert(CameraConfig {
             height_offset: 0.0,
@@ -71,30 +60,7 @@ fn spawn_player(mut commands: Commands) {
             exposure: Exposure::SUNLIGHT,
             ..default()
         },
-        RenderPlayer { logical_entity },
+        RenderPlayer(e),
         AtmosphereCamera::default(),
     ));
-}
-
-fn manage_cursor(
-    btn: Res<ButtonInput<MouseButton>>,
-    key: Res<ButtonInput<KeyCode>>,
-    mut window_query: Query<&mut Window>,
-    mut controller_query: Query<&mut FpsController>,
-) {
-    let mut window = window_query.single_mut();
-    if btn.just_pressed(MouseButton::Left) {
-        window.cursor.grab_mode = CursorGrabMode::Locked;
-        window.cursor.visible = false;
-        for mut controller in &mut controller_query {
-            controller.enable_input = true;
-        }
-    }
-    if key.just_pressed(KeyCode::Escape) {
-        window.cursor.grab_mode = CursorGrabMode::None;
-        window.cursor.visible = true;
-        for mut controller in &mut controller_query {
-            controller.enable_input = false;
-        }
-    }
 }
